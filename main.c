@@ -4,6 +4,7 @@
 #include "hardware/pwm.h"
 
 int main() {
+	float counter=0.0;
 	unsigned int port,slice,channel;
 	int i;
 	stdio_init_all();
@@ -28,15 +29,12 @@ int main() {
 	// Enable
 	pwm_set_enabled(slice, true);
 	
+	i=time_us_32();
+	
 	while(1){
-		for(i=0;i<15;i++){
-			pwm_set_chan_level(6, PWM_CHAN_A,i*16);
-			sleep_us(76);
-		}
-		for(i=15;0<i;i--){
-			pwm_set_chan_level(6, PWM_CHAN_A,i*16);
-			sleep_us(76);
-		}
-		
+		i+=63;
+		sleep_until(i);
+		counter+=0.1728; //3.141593*2.0*440.0/16000.0;
+		pwm_set_chan_level(6, PWM_CHAN_A, (int)(128.0 + sin(counter)*127.9));
 	}
 }

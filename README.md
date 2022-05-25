@@ -7,6 +7,7 @@ Raspberry Pi Picoを用いたPCMサウンドの再生サンプルコードです
 GP28
 
 サウンドは、GP28に出力されます。イヤホンを直接GP32に接続すれば、再生音を聞くことができます。アンプにつなげる場合は、shematic.pngを参考にして、ローパスフィルターを通して接続することをお勧めします。
+![schematic.png](https://raw.githubusercontent.com/kmorimatsu/pcm/main/schematic.png)
 
 ## License
 LGPL v2.1 except for wav.h

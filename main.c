@@ -98,6 +98,7 @@ int check_battery(void){
 #define play_wav(a) _play_wav (&a[0],sizeof a)
 void _play_wav(const unsigned char* wav_data, unsigned int wav_size){
 	unsigned int cpos,wpos;
+	gpio_put(22,0);
 	wav_size&=0xfffffffe;
 	cpos=time_us_32();
 	wpos=0;
@@ -110,6 +111,7 @@ void _play_wav(const unsigned char* wav_data, unsigned int wav_size){
 		sleep_until(cpos);
 		pwm_set_chan_level(PCM_SLICE, PCM_CHAN, wav_data[wpos++]);
 	}
+	gpio_put(22,1);
 }
 
 int main() {
@@ -118,11 +120,14 @@ int main() {
 	adc_init();
 	sleep_until_seconds(0);
 	pwm_init_for_pcm();
+	gpio_init(22);
+	gpio_set_dir(22, GPIO_OUT);
+	gpio_put(22,1);
 	
 	// Check battery and play wav in the beginning
 	if (check_battery()) play_wav(err0);
-	//else play_wav(wav0);
-	else play_wav(b5th);
+	else play_wav(wav0);
+	//else play_wav(b5th);
 	
 	// Wait for 10 minutes and play
 	sleep_until_seconds(600);

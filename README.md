@@ -17,9 +17,18 @@ Copy and modify the source code for your purpose. If the code used as it is, Ras
 ## How to embed sound file
 Prepare either 16000 Hz, 8 bit, mono, or 12000 Hz 16 bit mono wave file (\*.wav). Use the php-script placed in scripts folder to convert the wave file to text file (\*.txt). Use the text file to construct C array in source code.
 
+<<<<<<< HEAD
+About 130 seconds of 16000 Hz 8 bit sound can be embded. About 116 seconds of 12000 Hz 16 bit sound can be embded (it will be converted to 12 bit).
+
 サウンドファイルをソースコードに埋め込むには、まず、16000 Hz, 8 bit,モノラル、もしくは12000 Hz 16 bit, モノラルのwaveファイルを準備してください。次に、scriptsディレクトリーにあるPHPスクリプトを使って、テキストファイルに変換します。テキストファイルは、Cコード中の配列表記として埋め込むことができます。
 
+16000 Hz 8 bitのサウンドなら、約130秒埋め込むことができます。12000 Hz 16 bitなら、約116秒です（12 bitサウンドに変換されます）。
+
+=======
+サウンドファイルをソースコードに埋め込むには、まず、16000 Hz, 8 bit,モノラル、もしくは12000 Hz 16 bit, モノラルのwaveファイルを準備してください。次に、scriptsディレクトリーにあるPHPスクリプトを使って、テキストファイルに変換します。テキストファイルは、Cコード中の配列表記として埋め込むことができます。
+
+>>>>>>> 86b9c24f9d6fccbcefde3736a7ea939510fe1b32
 ## License
-Public domain except for wav.h
+Public domain except for header files
 
 サウンドの生データーを含むヘッダファイルのライセンスに関しては、それぞれのファイルを参照して下さい。その他のファイルのライセンスは、パブリックドメインです。ご自由にお使いください。

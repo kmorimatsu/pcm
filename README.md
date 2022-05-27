@@ -1,7 +1,7 @@
 # pcm
-PCM sound by Respberry Pi Pico
+PCM sound by Respberry Pi Pico to play 16000 Hz, 8 bit or 12000 Hz, 12 bit audio data
 
-Raspberry Pi Picoを用いたPCMサウンドの再生サンプルコードです。16000 Hz, 8 bitのデーターを、再生することができます。
+Raspberry Pi Picoを用いたPCMサウンドの再生サンプルコードです。16000 Hz, 8 bitもしくは12000 Hz, 12 bitのデーターを、再生することができます。
 
 ## PCM sound output
 GP28. If earphone is connected directory to GP28, you can hear the sound. When an amplifier will be connected, referer the schematic for the connection of low-pass filter.

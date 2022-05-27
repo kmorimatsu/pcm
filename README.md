@@ -14,6 +14,11 @@ Copy and modify the source code for your purpose. If the code used as it is, Ras
 
 使い方：ソースコードをコピー・修正して用いてください。ここのコードをそのまま利用すれば、Raspberry Pi Pico は始めに「パン焼く」と言い、10分後に「パン焼けた」を何回か繰り返します。
 
+## How to embed sound file
+Prepare either 16000 Hz, 8 bit, mono, or 12000 Hz 16 bit mono wave file (\*.wav). Use the php-script placed in scripts folder to convert the wave file to text file (\*.txt). Use the text file to construct C array in source code.
+
+サウンドファイルをソースコードに埋め込むには、まず、16000 Hz, 8 bit,モノラル、もしくは12000 Hz 16 bit, モノラルのwaveファイルを準備してください。次に、scriptsディレクトリーにあるPHPスクリプトを使って、テキストファイルに変換します。テキストファイルは、Cコード中の配列表記として埋め込むことができます。
+
 ## License
 Public domain except for wav.h
 

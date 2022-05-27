@@ -3,19 +3,36 @@
 #include "hardware/adc.h"
 #include "./wav.h"
 #include "./b5th.h"
+#include "./tc1.h"
+
+/*
+	Configurations
+*/
 
 // Use port 28 for PCM audio output
 #define PCM_PORT 28
 #define PCM_SLICE 6
 #define PCM_CHAN PWM_CHAN_A
 
+// Use port 22 for controlling audio output
+#define CS_AUDIO 22
+
+// Select PCM setting of either 16k Hz 8 bit or 12k Hz 12 bit
+//#define PCM_16k_8
+#define PCM_12k_12
+
 /*
 	Initialize PWM for PCM
 	
 	void pwm_init_for_pcm(void);
 */
+#if defined PCM_16k_8
+	#define pwm_init_for_pcm() pwm_init_for_pcm_16k_8()
+#elif defined PCM_12k_12
+	#define pwm_init_for_pcm() pwm_init_for_pcm_12k_12()
+#endif
 
-void pwm_init_for_pcm(void){
+void pwm_init_for_pcm_16k_8(void){
 	int i;
 	// Allocate GPIO to the PWM
 	gpio_set_function(PCM_PORT, GPIO_FUNC_PWM);
@@ -34,6 +51,24 @@ void pwm_init_for_pcm(void){
 	}
 }
 
+void pwm_init_for_pcm_12k_12(void){
+	int i;
+	// Allocate GPIO to the PWM
+	gpio_set_function(PCM_PORT, GPIO_FUNC_PWM);
+	// Set clock divier for fastest frequency
+	pwm_set_clkdiv(PCM_SLICE,1.0);
+	// 4096 cycles PWM
+	pwm_set_wrap(PCM_SLICE, 4095);
+	// Set duty
+	pwm_set_chan_level(PCM_SLICE, PCM_CHAN, 0);
+	// Enable
+	pwm_set_enabled(PCM_SLICE, true);
+	// Wake up
+	for(i=0;i<=0x800;i++){
+		pwm_set_chan_level(PCM_SLICE, PCM_CHAN,i);
+		sleep_us(10);
+	}
+}
 /*
 	Sleep until at seconds after starting
 	
@@ -90,15 +125,19 @@ int check_battery(void){
 }
 
 /*
-	Macro/function to play wav file array
+	Play wav file array
 	
 	void play_wav(const unsigned char[] wav_data);
 */
+#if defined PCM_16k_8
+	#define play_wav(a) _play_wav_16k_8 (&a[0],sizeof a)
+#elif defined PCM_12k_12
+	#define play_wav(a) _play_wav_12k_12 (&a[0],sizeof a)
+#endif
 
-#define play_wav(a) _play_wav (&a[0],sizeof a)
-void _play_wav(const unsigned char* wav_data, unsigned int wav_size){
+void _play_wav_16k_8(const unsigned char* wav_data, unsigned int wav_size){
 	unsigned int cpos,wpos;
-	gpio_put(22,0);
+	gpio_put(CS_AUDIO,0);
 	wav_size&=0xfffffffe;
 	cpos=time_us_32();
 	wpos=0;
@@ -111,7 +150,54 @@ void _play_wav(const unsigned char* wav_data, unsigned int wav_size){
 		sleep_until(cpos);
 		pwm_set_chan_level(PCM_SLICE, PCM_CHAN, wav_data[wpos++]);
 	}
-	gpio_put(22,1);
+	gpio_put(CS_AUDIO,1);
+}
+
+void _play_wav_12k_12(const unsigned char* wav_data, unsigned int wav_size){
+	unsigned int cpos,wpos,i;
+	unsigned short d;
+	gpio_put(CS_AUDIO,0);
+	cpos=time_us_32();
+	wpos=0;
+	d=wav_data[wpos++];
+	d|=(wav_data[wpos]&0x0f)<<8;
+	for(i=0;wpos < wav_size;i++){
+		// 10000000 / 12000 = 83.333333
+		switch(i){
+			case 0:
+			case 3:
+				cpos+=83;
+				break;
+			case 1:
+			case 4:
+				cpos+=83;
+				break;
+			case 2:
+			case 5:
+				cpos+=84;
+				break;
+		}
+		switch(i){
+			case 0:
+			case 2:
+			case 4:
+				sleep_until(cpos);
+				pwm_set_chan_level(PCM_SLICE, PCM_CHAN, d);
+				d=wav_data[wpos++]>>4;
+				d|=wav_data[wpos++]<<4;
+				break;
+			case 5:
+				i=-1;
+			case 1:
+			case 3:
+				sleep_until(cpos);
+				pwm_set_chan_level(PCM_SLICE, PCM_CHAN, d);
+				d=wav_data[wpos++];
+				d|=(wav_data[wpos]&0x0f)<<8;
+				break;
+		}
+	}
+	gpio_put(CS_AUDIO,1);
 }
 
 int main() {
@@ -120,28 +206,15 @@ int main() {
 	adc_init();
 	sleep_until_seconds(0);
 	pwm_init_for_pcm();
-	gpio_init(22);
-	gpio_set_dir(22, GPIO_OUT);
-	gpio_put(22,1);
+	gpio_init(CS_AUDIO);
+	gpio_set_dir(CS_AUDIO, GPIO_OUT);
+	gpio_put(CS_AUDIO,1);
 	
 	// Check battery and play wav in the beginning
-	if (check_battery()) play_wav(err0);
-	else play_wav(wav0);
-	//else play_wav(b5th);
+	if (check_battery()) play_wav(b5thi);
+	else play_wav(b6thi);
 	
-	// Wait for 10 minutes and play
-	sleep_until_seconds(600);
-	play_wav(wav1);
-	sleep_until_seconds(610);
-	play_wav(wav1);
-	sleep_until_seconds(620);
-	play_wav(wav1);
-	sleep_until_seconds(630);
-	play_wav(wav1);
-	sleep_until_seconds(640);
-	play_wav(wav1);
-	sleep_until_seconds(650);
-	play_wav(wav1);
-	sleep_until_seconds(660);
-	play_wav(wav1);
+	// Wait for 1 minutes and play
+	sleep_until_seconds(60);
+	play_wav(tc1);
 }

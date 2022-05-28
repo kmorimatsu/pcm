@@ -64,9 +64,9 @@ void pwm_init_for_pcm_12k_12(void){
 	// Enable
 	pwm_set_enabled(PCM_SLICE, true);
 	// Wake up
-	for(i=0;i<=0x800;i++){
+	for(i=0;i<=0x800;i+=0x10){
 		pwm_set_chan_level(PCM_SLICE, PCM_CHAN,i);
-		sleep_us(10);
+		sleep_us(100);
 	}
 }
 /*
@@ -201,6 +201,7 @@ void _play_wav_12k_12(const unsigned char* wav_data, unsigned int wav_size){
 }
 
 int main() {
+	int i;
 	// Initializations
 	stdio_init_all();
 	adc_init();
@@ -214,7 +215,9 @@ int main() {
 	if (check_battery()) play_wav(b5thi);
 	else play_wav(b6thi);
 	
-	// Wait for 1 minutes and play
-	sleep_until_seconds(60);
-	play_wav(tc1);
+	// Wait for 7 minutes and play every 3 minutes
+	for(i=420;true;i+=180){
+		sleep_until_seconds(i);
+		play_wav(tc1);
+	}
 }

@@ -60,8 +60,8 @@ function wav2txt($filename){
 		$w|=ord(substr($body,$i+1,1))<<8;
 		$w+=32768;
 		// Obtain 16 bit data again
-		$w2=ord(substr($body,$i,1));
-		$w2|=ord(substr($body,$i+1,1))<<8;
+		$w2=ord(substr($body,$i+2,1));
+		$w2|=ord(substr($body,$i+3,1))<<8;
 		$w2+=32768;
 		// Convert to 24 bits data containing two 12 bits data
 		$w>>=4;

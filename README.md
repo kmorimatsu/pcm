@@ -10,9 +10,9 @@ GP28. If earphone is connected directory to GP28, you can hear the sound. When a
 ![schematic.png](https://raw.githubusercontent.com/kmorimatsu/pcm/main/schematic.png)
 
 ## How to use
-Copy and modify the source code for your purpose. If the code used as it is, Raspberry Pi Pico says "pan yaku" ("bake bread" in Japanese) in the beginning. After 10 minutes, it says "pan yaketa" ("bread is baked" in Japanese) several times.
+Copy and modify the source code for your purpose. If the code used as it is, Raspberry Pi Pico says "pan yaku" ("bake bread" in Japanese) in the beginning. After 7 minutes, it says "pan yaketa" ("bread is baked" in Japanese) every 3 minutes.
 
-使い方：ソースコードをコピー・修正して用いてください。ここのコードをそのまま利用すれば、Raspberry Pi Pico は始めに「パン焼く」と言い、10分後に「パン焼けた」を何回か繰り返します。
+使い方：ソースコードをコピー・修正して用いてください。ここのコードをそのまま利用すれば、Raspberry Pi Pico は始めに「パン焼く」と言い、7分後から「パン焼けた」を3分ごとに繰り返します。
 
 ## How to embed sound file
 Prepare either 16000 Hz, 8 bit, mono, or 12000 Hz 16 bit mono wave file (\*.wav). Use the php-script placed in scripts folder to convert the wave file to text file (\*.txt). Use the text file to construct C array in source code.

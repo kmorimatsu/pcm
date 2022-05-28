@@ -18,8 +18,8 @@
 #define CS_AUDIO 22
 
 // Select PCM setting of either 16k Hz 8 bit or 12k Hz 12 bit
-//#define PCM_16k_8
-#define PCM_12k_12
+#define PCM_16k_8
+//#define PCM_12k_12
 
 /*
 	Initialize PWM for PCM
@@ -212,12 +212,15 @@ int main() {
 	gpio_put(CS_AUDIO,1);
 	
 	// Check battery and play wav in the beginning
-	if (check_battery()) play_wav(b5thi);
-	else play_wav(b6thi);
+	if (check_battery()) play_wav(err0);
+	//if (check_battery()) play_wav(b5thi);
+	else play_wav(wav0);
+	//else play_wav(b6thi);
 	
 	// Wait for 7 minutes and play every 3 minutes
 	for(i=420;true;i+=180){
 		sleep_until_seconds(i);
-		play_wav(tc1);
+		play_wav(wav1);
+		//play_wav(tc1);
 	}
 }
